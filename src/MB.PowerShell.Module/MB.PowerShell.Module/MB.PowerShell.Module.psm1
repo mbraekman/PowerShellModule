@@ -17,11 +17,11 @@
 #>
 function Get-KeyVaultAccessPolicies {
 	param(
-	   [string][parameter(Mandatory = $true)] $KeyVaultName,
-	   [string][parameter(Mandatory = $false)] $ResourceGroupName = "",
-	   [string][parameter(Mandatory = $false)] $OutputVariableName = "Infra.KeyVault.AccessPolicies"
+	   [parameter(Mandatory = $true)][string] $KeyVaultName,
+	   [parameter(Mandatory = $false)][string] $ResourceGroupName = "",
+	   [parameter(Mandatory = $false)][string] $OutputVariableName = "Infra.KeyVault.AccessPolicies"
 	)
-	. $PSScriptRoot\Scripts\Get-Infra-KeyVault-AccessPolicies.ps1 -keyVaultName $KeyVaultName -resourceGroupName $ResourceGroupName -outputVariableName $OutputVariableName
+	. $PSScriptRoot\Scripts\Get-Infra-KeyVaultAccessPolicies.ps1 -keyVaultName $KeyVaultName -resourceGroupName $ResourceGroupName -outputVariableName $OutputVariableName
 }
 
 <#
@@ -64,5 +64,31 @@ function Set-DataFactoryTriggerState {
 	}
 }
 
+
+<#
+ .Synopsis
+  Clear the deployment logs within a resource group. 
+
+ .Description
+  Prevent deployment failures occuring in case 800+ deployments logs are already stored for the targeted resource group.
+
+ .Parameter ResourceGroupName
+  The resource group for which the logs needs to be cleared.
+
+ .Parameter NumberRetained
+  The amount of entries to be retained in the log.
+#>
+function Remove-OldArmDeploymentLogs{
+	Param(
+    	[Parameter(Mandatory=$true)][string]$ResourceGroupName,
+    	[Parameter(Mandatory=$false)][int]$NumberRetained=100
+	)
+	. $PSScriptRoot\Scripts\Remove-Azure-OldArmDeployments.ps1 -resourceGroup $ResourceGroupName -numberRetained $NumberRetained
+}
+
+
 Export-ModuleMember Get-KeyVaultAccessPolicies
+
 Export-ModuleMember Set-DataFactoryTriggerState
+
+Export-ModuleMember Remove-OldArmDeploymentLogs
