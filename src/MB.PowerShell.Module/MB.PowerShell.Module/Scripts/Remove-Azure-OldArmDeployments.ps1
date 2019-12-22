@@ -31,7 +31,7 @@ function Get-AzCachedAccessToken()
     Write-Host "Access-token and subscriptionId retrieved"
 }
 
-$deployments = Get-AzureRmResourceGroupDeployment -resourceGroupName $resourceGroup
+$deployments = Get-AzResourceGroupDeployment -resourceGroupName $resourceGroup
 $numberOfDeployments = $deployments.Count 
 
 if($numberOfDeployments -gt $numberRetained){
