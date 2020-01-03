@@ -1,0 +1,44 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+  branches:
+    include:
+    - master
+    - feature/*
+  paths:
+    include:
+    - src/*
+    - deploy/*
+
+pool:
+  name: Azure Pipelines
+
+variables:
+  group: PowerShell.Module.Az
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)/PowerShellModuleFiles'
+    inputs:
+      SourceFolder: src/MB.PowerShell.Module/MB.PowerShell.Module
+      Contents: |
+       **/*.psm1
+       **/*.psd1
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/PowerShellModuleFiles'
+  
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: MB.PowerShell.Module/Scripts'
+    inputs:
+      PathtoPublish: src/MB.PowerShell.Module/MB.PowerShell.Module/Scripts
+      ArtifactName: MB.PowerShell.Module/Scripts
+  
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: MB.PowerShell.Module PSM1 & PSD1'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/PowerShellModuleFiles'
+      ArtifactName: MB.PowerShell.Module  
